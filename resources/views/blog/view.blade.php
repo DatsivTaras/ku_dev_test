@@ -5,12 +5,16 @@
         <h4 align='center'>{{$blog->title}}</h4>
         <h6>{{$blog->description}}</h6>
         <h4 align='center'>{{__('comment.comments')}}</h4>
-        <div class="input-group mb-3">
-            <input name="comment" id='inputcomment' type="text" class="js-input-comment form-control" placeholder="{{__('comment.leaveAComment')}}">
-            <button data-id='{{$blog->id}}' class="js-add-comment btn btn-primary" type="button">{{__('comment.leaveAComment')}}</button>
-        </div><br><br>
+        {{ Form::open(['class' => 'js-comment-form']) }}
+            <div class="input-group mb-3">
+                {{ Form::text('comment', '', ['id' => 'inputcomment', 'class' => 'js-input-comment form-control', 'placeholder'=>__('comment.leaveAComment')]) }}
+                {{ Form::submit(__('comment.leaveAComment'), ['data-id' => $blog->id, 'class' => 'js-add-comment btn btn-primary'])}}
+            </div>
+            <p class="error-block error-text" style="color:red;"></p>
+        {{ Form::close() }}
         <div class="js-get-comments"></div>
     </div>
+
 <script>
     var blogView = {
         id: '{{$blog->id}}',
@@ -29,7 +33,14 @@
                 app.deleteComment(id);
             });
 
-            $(document).on('click', '.js-add-comment', function() {
+            $(document).on('keyup', '.js-comment-form input', function(e) {
+                e.preventDefault();
+                $('.js-comment-form .error-block').text('')
+            })
+
+            $(document).on('click', '.js-add-comment', function(e) {
+                e.preventDefault();
+
                 var id = $(this).data('id');
                 var comment = $('#inputcomment').val();
                 app.addComment(id, comment);
@@ -48,8 +59,16 @@
                 },
                 dataType: 'json',
             }).done(function(result) {
-               $('.js-input-comment').val('');
+                $('.js-input-comment').val('');
                 $('.js-get-comments').prepend(app.generateTemplateComment(result));
+            }).fail(function(jqXHR, textStatus) {
+                app.addErrorsToForm(jqXHR.responseJSON.errors)
+            });
+        },
+
+        addErrorsToForm: function (errors) {
+            $.each(errors, function(field, fieldErrors) {
+                $('.js-comment-form .error-' + field).text(fieldErrors.join(", "))
             });
         },
 

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentsCreate;
 use App\Models\Comments;
 use App\Services\CommentsService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 
-class СommentController extends Controller
+class CommentController extends Controller
 {
     /*
      * @param int $id
@@ -21,12 +22,12 @@ class СommentController extends Controller
     /*
      * @param Request $request
      */
-    public function store(Request $request)
+    public function store(CommentsCreate $request)
     {
         $comment = new Comments();
         $comment->fill($request->all());
         $comment->save();
-        
+
         return json_encode([
             'id' => $comment->id,
             'text' => $comment->text,
