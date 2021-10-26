@@ -27,26 +27,21 @@
             let app = this;
             
             app.getAllComments();
-
             $(document).on('click', '.js-delete', function() {
                 var id = $(this).data('id');
                 app.deleteComment(id);
             });
-
             $(document).on('keyup', '.js-comment-form input', function(e) {
                 e.preventDefault();
                 $('.js-comment-form .error-block').text('')
             })
-
             $(document).on('click', '.js-add-comment', function(e) {
                 e.preventDefault();
-
                 var id = $(this).data('id');
                 var comment = $('#inputcomment').val();
                 app.addComment(id, comment);
             });
         },
-
         addComment: function(id, comment) {
             let app = this;
             $.ajax({
@@ -65,13 +60,11 @@
                 app.addErrorsToForm(jqXHR.responseJSON.errors)
             });
         },
-
         addErrorsToForm: function (errors) {
             $.each(errors, function(field, fieldErrors) {
                 $('.js-comment-form .error-' + field).text(fieldErrors.join(", "))
             });
         },
-
         deleteComment: function(id) {
             let app = this;
             $.ajax({
@@ -86,7 +79,6 @@
                 $('.js-comment-delete-' + id).remove();
             });
         },
-
         getAllComments: function() {
             let id = this.id;
             let app = this;
@@ -105,7 +97,6 @@
                 });   
             });
         },
-
         generateTemplateComment: function(comment) {
             return '<div class="js-comment-delete-' + comment['id'] + ' js-comment">'+
                         '<div align=right>'+
@@ -117,7 +108,6 @@
                     '</div>';
         }
     }
-
     $(function() {
         blogView.init();
     });
