@@ -3,11 +3,15 @@
 @section('content')
     <div class='container'>    
         <h4 align='center'>{{$blog->title}}</h4>
-        <h6>{{$blog->description}}</h6>
+        <h6>{!!$blog->getDescriptionWithLink()!!}</h6>
         <h4 align='center'>{{__('comment.comments')}}</h4>
         {{ Form::open(['class' => 'js-comment-form']) }}
             <div class="input-group mb-3">
-                {{ Form::text('comment', '', ['id' => 'inputcomment', 'class' => 'js-input-comment form-control', 'placeholder'=>__('comment.leaveAComment')]) }}
+                {{ Form::text('comment', '', [
+                    'id' => 'inputcomment',
+                    'class' => 'js-input-comment form-control', 
+                    'placeholder'=>__('comment.leaveAComment')
+                ]) }}
                 {{ Form::submit(__('comment.leaveAComment'), ['data-id' => $blog->id, 'class' => 'js-add-comment btn btn-primary'])}}
             </div>
             <p class="error-block error-text" style="color:red;"></p>
@@ -27,21 +31,26 @@
             let app = this;
             
             app.getAllComments();
+
             $(document).on('click', '.js-delete', function() {
                 var id = $(this).data('id');
                 app.deleteComment(id);
             });
+
             $(document).on('keyup', '.js-comment-form input', function(e) {
                 e.preventDefault();
                 $('.js-comment-form .error-block').text('')
             })
+
             $(document).on('click', '.js-add-comment', function(e) {
                 e.preventDefault();
+
                 var id = $(this).data('id');
                 var comment = $('#inputcomment').val();
                 app.addComment(id, comment);
             });
         },
+
         addComment: function(id, comment) {
             let app = this;
             $.ajax({
@@ -60,11 +69,13 @@
                 app.addErrorsToForm(jqXHR.responseJSON.errors)
             });
         },
+
         addErrorsToForm: function (errors) {
             $.each(errors, function(field, fieldErrors) {
                 $('.js-comment-form .error-' + field).text(fieldErrors.join(", "))
             });
         },
+
         deleteComment: function(id) {
             let app = this;
             $.ajax({
@@ -79,6 +90,7 @@
                 $('.js-comment-delete-' + id).remove();
             });
         },
+
         getAllComments: function() {
             let id = this.id;
             let app = this;
@@ -97,6 +109,7 @@
                 });   
             });
         },
+
         generateTemplateComment: function(comment) {
             return '<div class="js-comment-delete-' + comment['id'] + ' js-comment">'+
                         '<div align=right>'+
@@ -108,6 +121,7 @@
                     '</div>';
         }
     }
+
     $(function() {
         blogView.init();
     });

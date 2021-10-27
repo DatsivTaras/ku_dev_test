@@ -14,7 +14,7 @@
         <tbody>
             @foreach ($blogs as $blog)
                 <tr>
-                    <td><a href='blog\view/{{$blog->id}}'>{{$blog->title}}</a></td>
+                    <td><a href='{{$blog->getLink()}}'>{{$blog->title}}</a></td>
                     <td>{{$blog->getStatus()}}</td>
                     <td>{{$blog->updated_at}}</td>
                 </tr>

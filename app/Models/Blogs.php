@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Classes\Enum\BlogStatus;
+use App\Services\BlogsService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,22 @@ class Blogs extends Model
         'description',
         'status'
     ];
+
+    /*
+     * @return string
+     */
+    public function getLink()
+    {
+        return route('blog.view', ['id' => $this->id]);
+    }
+
+    /*
+     * @return string
+     */
+    public function getDescriptionWithLink()
+    {
+        return BlogsService::addLinkToBlogDescription($this);
+    }
 
     /*
      * @return string
